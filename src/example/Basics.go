@@ -5,12 +5,33 @@ import (
 	"bufio"
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 )
 
 func main() {
-	concurrency()
+	errorss()
+}
+
+type RuntimeError struct {
+	Err error
+}
+
+func (re RuntimeError) Error() string {
+	return re.Err.Error()
+}
+
+func throwError() *RuntimeError {
+	return &RuntimeError{
+		Err: errors.New("runtime error....."),
+	}
+}
+
+func errorss() {
+	if e := throwError(); e != nil {
+		fmt.Println(e.Error())
+	}
 }
 
 func concurrency() {
