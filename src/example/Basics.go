@@ -14,16 +14,16 @@ func main() {
 	errorss()
 }
 
-type RuntimeError struct {
+type BizError struct {
 	Err error
 }
 
-func (re RuntimeError) Error() string {
+func (re BizError) Error() string {
 	return re.Err.Error()
 }
 
-func throwError() *RuntimeError {
-	return &RuntimeError{
+func throwError() *BizError {
+	return &BizError{
 		Err: errors.New("runtime error....."),
 	}
 }
