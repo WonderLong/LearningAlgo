@@ -50,13 +50,14 @@ func (s *Server) Start() error {
 func (s Server) handleWithScanner(conn *net.TCPConn) {
 	//解决粘包问题，找到分隔点，这个方法很不错
 	//以下两个关键点：
-	// 1.scanner的split
+	// 1.注册scanner的split
 	scanner := bufio.NewScanner(conn)
 	scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		//对长度8的判断是因为，我们的一段数据是从标志字：MINI（长度是4）和 4个byte的length字段开始。
 		//所以不同协议规则的分界点，需要重新定义
 		if !atEOF && len(data) >= 8 && data[0] == 'M' && data[1] == 'I' && data[2] == 'N' && data[3] == 'I' {
 			length := uint32(0)
+			//data[4:8] 是content的长度
 			binary.Read(bytes.NewReader(data[4:8]), binary.BigEndian, &length)
 			if int(length)+8 <= len(data) {
 				return int(length) + 8, data[:int(length)+8], nil
